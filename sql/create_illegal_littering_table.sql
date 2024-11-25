@@ -11,27 +11,14 @@ CREATE TABLE IF NOT EXISTS illegal_littering (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     district VARCHAR(255),
     address VARCHAR(255),
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    latitude DOUBLE,
+    longitude DOUBLE,
+    CONSTRAINT unique_address_district UNIQUE (address, district)
 );
 
-/* 
-Clear existing data in the table before inserting new records
-[FIX ME]
-The reason for TRUNCATING is to avoid duplicate records from previous insertions,
-while still preserving data within the original files, which may have internal duplicates.
-However, further study is required to find a better solution
-that can handle internal duplicates in the source files while maintaining efficient imports.
- */
-TRUNCATE TABLE illegal_littering;
-
-
-/*
-No de-duplication
-because tracking duplicate occurrences of illegal dumping is important
-for identifying frequently affected areas.
-*/
 LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/yongsangu_dumping.csv'
-INTO TABLE illegal_littering
+IGNORE INTO TABLE illegal_littering
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
@@ -42,7 +29,7 @@ SET address = TRIM(@raw_address),
     create_time = CURRENT_TIMESTAMP;
 
 LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/gangnamgu_dumping.csv'
-INTO TABLE illegal_littering
+IGNORE INTO TABLE illegal_littering
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
