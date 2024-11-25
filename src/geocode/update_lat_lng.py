@@ -1,13 +1,13 @@
-from geopy.geocoders import Nominatim
-from src.db.db_connector import create_connection
 import re
+from src.db.db_connector import create_connection
+from src.geocode.geopy_geocode import get_coordinates_from_geopy
+from src.geocode.naver_geocode import get_coordinates_from_naver
 
-geolocator = Nominatim(user_agent="littering_and_bins")
 
 def clean_address(address):
-    address = re.sub(r"^\s*\S*동\s*", "", address)
+    # address = re.sub(r"^\s*\S*동\s*", "", address)
     address = re.sub(r"\s*\(.*?\)", "", address)
-    address = address.replace(" ", "")
+    # address = address.replace(" ", "")
     return address
 
 def update_coordinates(batch_size=300):
@@ -15,25 +15,31 @@ def update_coordinates(batch_size=300):
     cursor = db.cursor()
 
     try:
-        cursor.execute("SELECT id, address FROM bin_locations_focus WHERE latitude IS NULL OR longitude IS NULL")
+        cursor.execute(f"""
+            SELECT id, address 
+            FROM bin_locations_focus 
+            WHERE latitude IS NULL
+                OR longitude IS NULL 
+            """)
         rows = cursor.fetchall()
 
         for row in rows:
             entry_id, address = row
-            location = geolocator.geocode(address, timeout=10)
+            latitude, longitude = get_coordinates_from_naver(address)
 
-            if location:
-                latitude = location.latitude
-                longitude = location.longitude
-
-                cursor.execute(
-                    "UPDATE bin_locations_focus SET latitude = %s, longitude = %s WHERE id = %s",
+            if latitude is not None and longitude is not None:
+                cursor.execute(f"""
+                    UPDATE bin_locations_focus
+                    SET latitude = %s, longitude = %s
+                    WHERE id = %s
+                    """,
                     (latitude, longitude, entry_id)
                 )
-                print("done")
+                print(f"Updated {entry_id}")
             else:
                 print(f"Address not found: {address}")
 
+        print("FINISHED bin_locations")        
         db.commit()
 
         offset = 0
@@ -53,12 +59,9 @@ def update_coordinates(batch_size=300):
             for row in rows:
                 entry_id, address = row
                 cleaned_address = clean_address(address)
-                location = geolocator.geocode(cleaned_address, timeout=10)
+                latitude, longitude = get_coordinates_from_naver(cleaned_address)
 
-                if location:
-                    latitude = location.latitude
-                    longitude = location.longitude
-
+                if latitude is not None and longitude is not None:
                     cursor.execute(
                         """
                         UPDATE illegal_littering 
