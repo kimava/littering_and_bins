@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS illegal_littering (
     CONSTRAINT unique_address_district UNIQUE (address, district)
 );
 
-LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/yongsangu_dumping.csv'
+LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/raw/yongsangu_dumping.csv'
 IGNORE INTO TABLE illegal_littering
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
@@ -28,7 +28,7 @@ SET address = TRIM(@raw_address),
     district = 'yongsan', 
     create_time = CURRENT_TIMESTAMP;
 
-LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/gangnamgu_dumping.csv'
+LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/raw/gangnamgu_dumping.csv'
 IGNORE INTO TABLE illegal_littering
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'

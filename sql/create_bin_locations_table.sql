@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS bin_locations_raw (
     CONSTRAINT unique_raw_entry UNIQUE (district, address, detailed_address)
 );
 
-LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/seoul_bins.csv'
+LOAD DATA LOCAL INFILE '~/Projects/littering_and_bins/data/raw/seoul_bins.csv'
 INTO TABLE bin_locations_raw
 FIELDS TERMINATED BY ',' 
 LINES TERMINATED BY '\n'
