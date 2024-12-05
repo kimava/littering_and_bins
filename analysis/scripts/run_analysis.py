@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from analysis.scripts.process_data import filter_data_within_bounds
 from analysis.scripts.calculate_distances import calculate_distances
 from analysis.scripts.data_summary import save_summary_statistics
-from analysis.scripts.visualisation import create_distance_distribution_plot, create_folium_map
+from analysis.scripts.visualisation import create_distance_distribution_plot, create_boxplot, create_folium_map
 
 
 def run_analysis():
@@ -28,6 +28,12 @@ def run_analysis():
     fig, ax = create_distance_distribution_plot(nearest_bins_distances)
     png_path = os.path.expanduser("~/Projects/littering_and_bins/results/nearest_bins_distances_histogram.png")
     fig.savefig(png_path, format="png")
+    plt.show()
+
+    # Saves box plot as a PNG file
+    fig, ax = create_boxplot(nearest_bins_distances)
+    boxplot_path = os.path.expanduser("~/Projects/littering_and_bins/results/nearest_bins_distances_boxplot.png")
+    fig.savefig(boxplot_path, format="png")
     plt.show()
 
     # Saves Folium map visualisation

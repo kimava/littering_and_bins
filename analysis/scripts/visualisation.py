@@ -121,3 +121,20 @@ def create_distance_distribution_plot(distances):
     ax.grid(True)
     
     return fig, ax
+
+def create_boxplot(distances):
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    ax.boxplot(distances, vert = False, patch_artist = True, 
+               boxprops = dict(facecolor = 'salmon', color = 'black'),
+               whiskerprops = dict(color = 'black'),
+               capprops = dict(color = 'black'),
+               flierprops = dict(marker = 'o', color = 'gray', markersize = 3),
+               medianprops = dict(color='red', linewidth = 1))
+
+    ax.set_title("Boxplot of Nearest Bin Distances From Illegal Littering Location")
+    ax.set_xlabel("Distance (meters)")
+    ax.set_yticks([])
+    ax.grid(True)
+
+    return fig, ax
