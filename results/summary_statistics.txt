@@ -1,0 +1,6 @@
+Nearest Bin Distances - Summary Statistics:
+Minimum Distance: 0.00 meters
+Maximum Distance: 631.02 meters
+Mean Distance: 196.70 meters
+Median Distance: 189.64 meters
+Standard Deviation: 107.19 meters
